@@ -55,7 +55,7 @@ class LeaderboardTabState extends State<LeaderboardTab> {
         );
       }).toList(),
       hint: const Text(
-        "Please choose a langauage",
+        "-= Select a mod =-",
         style: TextStyle(
             color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
       ),

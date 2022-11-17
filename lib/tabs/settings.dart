@@ -14,6 +14,7 @@ class SettingsTabState extends State<SettingsTab> {
       MyApp.cfg.getSetting("general", "game_type") as String;
   static String gamePath =
       MyApp.cfg.getSetting("general", "game_path") as String;
+  static bool dev = MyApp.cfg.getSetting("general", "dev") as bool;
   static bool doorstopLog = MyApp.cfg.getSetting("doorstop", "logging") as bool;
   static bool doorstopDebug = MyApp.cfg.getSetting("doorstop", "debug") as bool;
   static bool bepinhecksConsole =
@@ -58,12 +59,19 @@ class SettingsTabState extends State<SettingsTab> {
     MyApp.cfg.updateSettings("bepinhecks", "console", value);
   }
 
+  void changeDevMode(value) {
+    setState(() {
+      dev = value;
+    });
+    MyApp.cfg.updateSettings("general", "dev", value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: SettingsList(sections: [
         SettingsSection(
-          title: const Text("Game"),
+          title: const Text("General"),
           tiles: [
             SettingsTile(
               title: const Text("Game type"),
@@ -81,6 +89,13 @@ class SettingsTabState extends State<SettingsTab> {
               value: Text(gamePath),
               onPressed: (context) => changeGamePath(),
             ),
+            SettingsTile.switchTile(
+                initialValue: dev,
+                onToggle: (value) {
+                  changeDevMode(value);
+                },
+                enabled: true,
+                title: const Text("Developer mode")),
           ],
         ),
         SettingsSection(
