@@ -1,8 +1,8 @@
-import 'dart:async';
-import 'dart:collection';
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import "dart:async";
+import "dart:collection";
+import "dart:convert";
+import "package:flutter/material.dart";
+import "package:http/http.dart" as http;
 
 class LeaderboardTab extends StatefulWidget {
   const LeaderboardTab({super.key});
@@ -56,8 +56,7 @@ class LeaderboardTabState extends State<LeaderboardTab> {
       }).toList(),
       hint: const Text(
         "-= Select a mod =-",
-        style: TextStyle(
-            color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500),
+        style: TextStyle(color: Colors.black),
       ),
       onChanged: (String? value) {
         setState(() {
@@ -93,7 +92,7 @@ class LeaderboardTabState extends State<LeaderboardTab> {
         "https://croiqlfjgofhokfrpagk.supabase.co/rest/v1/Leaderboards?select=*");
 
     Map<String, String> headers = HashMap();
-    headers.putIfAbsent('Accept', () => 'application/json');
+    headers.putIfAbsent("Accept", () => "application/json");
     headers.putIfAbsent(
         "apikey",
         () =>

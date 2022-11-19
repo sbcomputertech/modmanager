@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:mod_manager/util/config_file.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import "package:flutter/material.dart";
+import "package:mod_manager/util/config_file.dart";
+import "package:url_launcher/url_launcher.dart";
 
-import 'tabs/game.dart';
-import 'tabs/mods.dart';
-import 'tabs/leaderboard.dart';
-import 'tabs/settings.dart';
+import "tabs/game.dart";
+import "tabs/mods.dart";
+import "tabs/leaderboard.dart";
+import "tabs/settings.dart";
 
 void main() {
   runApp(const MyApp());
@@ -17,11 +16,10 @@ class MyApp extends StatelessWidget {
 
   static final ModManCfg cfg = ModManCfg.load();
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ModManager',
+      title: "ModManager",
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
@@ -37,27 +35,32 @@ class MyHomePage extends StatefulWidget {
 }
 
 class MyHomePageState extends State<MyHomePage> {
+  void setWindowTitle(String newTitle) {
+    setState(() {
+      winTitle = newTitle;
+    });
+  }
+
+  final tabNames = <String>["Game", "Instances", "Leaderboard", "Settings"];
+
+  String winTitle = "ModManager";
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          bottom: const TabBar(
-            tabs: [
+          bottom: TabBar(
+            tabs: const [
               Tab(icon: Icon(Icons.games)),
               Tab(icon: Icon(Icons.add_to_photos)),
               Tab(icon: Icon(Icons.show_chart_rounded)),
               Tab(icon: Icon(Icons.settings)),
             ],
+            onTap: (value) =>
+                {setWindowTitle("ModManager - ${tabNames[value]}")},
           ),
-          title: const Text("Mod Manager"),
+          title: Text(winTitle),
         ),
         body: const TabBarView(
           children: [

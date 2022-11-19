@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:mod_manager/main.dart';
-import 'package:settings_ui/settings_ui.dart';
-import 'package:file_picker/file_picker.dart';
+import "package:flutter/material.dart";
+import "package:mod_manager/main.dart";
+import "package:settings_ui/settings_ui.dart";
+import "package:file_picker/file_picker.dart";
 
 class SettingsTab extends StatefulWidget {
   const SettingsTab({super.key});
@@ -19,6 +19,8 @@ class SettingsTabState extends State<SettingsTab> {
   static bool doorstopDebug = MyApp.cfg.getSetting("doorstop", "debug") as bool;
   static bool bepinhecksConsole =
       MyApp.cfg.getSetting("bepinhecks", "console") as bool;
+  static String instPath =
+      MyApp.cfg.getSetting("general", "instance_root") as String;
 
   void changeGameType(String newVal) {
     setState(() {
@@ -66,6 +68,17 @@ class SettingsTabState extends State<SettingsTab> {
     MyApp.cfg.updateSettings("general", "dev", value);
   }
 
+  void changeInstPath() {
+    FilePicker.platform
+        .getDirectoryPath(dialogTitle: "Select isnstance root")
+        .then((value) {
+      setState(() {
+        instPath = value ?? "None";
+      });
+      MyApp.cfg.updateSettings("general", "instance_root", instPath);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -88,6 +101,11 @@ class SettingsTabState extends State<SettingsTab> {
               title: const Text("Game path"),
               value: Text(gamePath),
               onPressed: (context) => changeGamePath(),
+            ),
+            SettingsTile(
+              title: const Text("Instances root"),
+              value: Text(instPath),
+              onPressed: (context) => changeInstPath(),
             ),
             SettingsTile.switchTile(
                 initialValue: dev,

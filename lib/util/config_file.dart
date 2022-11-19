@@ -1,5 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
+import "dart:convert";
+import "dart:io";
 
 class ModManCfg {
   late Map<String, dynamic> json;
@@ -27,5 +27,39 @@ class ModManCfg {
   Object getSetting(String part, String key) {
     var section = "settings";
     return json[section][part][key];
+  }
+
+  List<dynamic> getInstances() {
+    var section = "instances";
+    return json[section];
+  }
+
+  void editInstance(id, newVal) {
+    var instances = getInstances();
+    var inst = getInstanceId(id);
+    var index = instances.indexOf(inst);
+    json["instances"][index] = newVal;
+    write();
+  }
+
+  dynamic getInstanceId(String id) {
+    var instances = getInstances();
+    for (var inst in instances) {
+      if (inst["id"] == id) {
+        return inst;
+      }
+    }
+  }
+
+  void deleteInstance(String id) {
+    var instanceToRemove = getInstanceId(id);
+    (json["instances"] as List<dynamic>).remove(instanceToRemove);
+    write();
+  }
+
+  void addInstance(String name, String id, String version) {
+    dynamic newObj = {"name": name, "id": id, "version": version};
+    (json["instances"] as List<dynamic>).add(newObj);
+    write();
   }
 }
