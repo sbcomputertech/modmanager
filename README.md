@@ -9,4 +9,4 @@ todo
 * [ ] Some BepInHecks config settings
 * [x] File picker for mod dlls
 * [ ] Game stats
-* [ ] Display BepInHecks version on instances
+* [x] Display BepInHecks version on instances
