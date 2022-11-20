@@ -76,6 +76,12 @@ class MyHomePageState extends State<MyHomePage> {
               var uri = Uri.parse("steam://rungameid/1329500");
               launchUrl(uri);
             }
+            var stat = MyApp.cfg.getStatInt("times_launched");
+            stat++;
+            MyApp.cfg.setStat("times_launched", stat);
+            setState(() {
+              var x = 1 * 1;
+            });
           },
           child: const Icon(Icons.play_arrow),
         ),

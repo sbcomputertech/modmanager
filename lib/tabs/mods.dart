@@ -18,8 +18,11 @@ class ModsTab extends StatefulWidget {
 }
 
 class ModsTabState extends State<ModsTab> {
+  static String selectedInstance = "";
+
   void handleLaunchClick(instId) {
     switchInstance(instId);
+    selectedInstance = instId;
   }
 
   List<Widget> genModWidgets(instId, jsonInp, dialogSetState) {
@@ -326,6 +329,7 @@ class ModsTabState extends State<ModsTab> {
               TextButton(
                 onPressed: () {
                   switchVanilla();
+                  selectedInstance = "vanilla";
                 },
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.resolveWith(

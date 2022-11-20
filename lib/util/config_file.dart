@@ -80,4 +80,17 @@ class ModManCfg {
         .add(newObj);
     write();
   }
+
+  int getStatInt(String name) {
+    return json["stats"][name] as int;
+  }
+
+  String getStatString(String name) {
+    return json["stats"][name] as String;
+  }
+
+  void setStat(String name, dynamic value) {
+    json["stats"][name] = value;
+    write();
+  }
 }
