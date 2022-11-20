@@ -15,13 +15,5 @@
 		"times_launched": 0
 	},
 	"instances": [
-		{
-			"name": "Example Instance",
-			"id": "example",
-			"version": "0.1.0",
-			"mods": [
-
-			]
-		}
 	]
 }
