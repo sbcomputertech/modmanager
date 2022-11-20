@@ -45,3 +45,7 @@ app.*.map.json
 
 # generated folders
 /bepinhecks-dl
+/out-windows
+/out-linux
+windows.zip
+linux.zip
