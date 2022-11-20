@@ -1,12 +1,14 @@
+import "dart:collection";
+import "dart:convert";
 import "dart:io";
-
-import 'package:file_picker/file_picker.dart';
+import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
 import "package:mod_manager/main.dart";
 import "package:mod_manager/tabs/settings.dart";
 import "package:mod_manager/util/bepinhecks_install_helper.dart";
 import "package:mod_manager/util/instance_file_manager.dart";
-import 'package:mod_manager/util/padded_divider.dart';
+import "package:mod_manager/util/padded_divider.dart";
+import "package:http/http.dart" as http;
 import "package:path/path.dart" as p;
 
 class ModsTab extends StatefulWidget {
@@ -288,7 +290,21 @@ class ModsTabState extends State<ModsTab> {
     dir.createSync();
     copyPath("bepinhecks-dl", instDir);
 
-    MyApp.cfg.addInstance(name, id, bihVersion);
+    var actualVersion = "";
+    if (bihVersion != "latest") {
+      actualVersion = bihVersion;
+    } else {
+      var query =
+          Uri.parse("https://api.github.com/repos/cobwebsh/BepInHecks/tags");
+      Map<String, String> headers = HashMap();
+      headers.putIfAbsent("Accept", () => "application/json");
+      var response = await http.get(query, headers: headers);
+      String jsonText = response.body;
+      final json = jsonDecode(jsonText);
+      actualVersion = json[0]["name"];
+    }
+
+    MyApp.cfg.addInstance(name, id, actualVersion);
   }
 
   List<Widget> generateCards() {
@@ -338,7 +354,7 @@ class ModsTabState extends State<ModsTab> {
                 leading: const Icon(Icons.interests),
                 title: Text(inst["name"]),
                 subtitle: Text(
-                    "${SettingsTabState.instPath}${Platform.pathSeparator}${inst["id"]}"),
+                    "${SettingsTabState.instPath}${Platform.pathSeparator}${inst["id"]}\nBepInHecks version: ${inst["version"]}"),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
