@@ -1,0 +1,27 @@
+{
+	"settings": {
+		"general": {
+			"game_type": "Steam",
+			"game_path": "None",
+			"instance_root": "None",
+			"dev": false
+		},
+		"bepinhecks": {
+			"console": false,
+			"logfile": true
+		}
+	},
+	"stats": {
+		"times_launched": 0
+	},
+	"instances": [
+		{
+			"name": "Example Instance",
+			"id": "example",
+			"version": "0.1.0",
+			"mods": [
+
+			]
+		}
+	]
+}
