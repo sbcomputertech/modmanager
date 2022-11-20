@@ -1,4 +1,5 @@
 import "dart:convert";
+import 'dart:ffi';
 import "dart:io";
 
 class ModManCfg {
@@ -58,8 +59,25 @@ class ModManCfg {
   }
 
   void addInstance(String name, String id, String version) {
-    dynamic newObj = {"name": name, "id": id, "version": version};
+    dynamic newObj = {
+      "name": name,
+      "id": id,
+      "version": version,
+      "mods": List.empty()
+    };
     (json["instances"] as List<dynamic>).add(newObj);
+    write();
+  }
+
+  void addMod(String name, String id, String version, String instance) {
+    dynamic newObj = {
+      "name": name,
+      "id": id,
+      "version": version,
+    };
+    (json["instances"][getInstances().indexOf(getInstanceId(instance))]["mods"]
+            as List<dynamic>)
+        .add(newObj);
     write();
   }
 }

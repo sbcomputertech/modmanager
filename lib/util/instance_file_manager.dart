@@ -59,3 +59,9 @@ void deleteInstanceFiles(String id) {
   var dir = Directory(path);
   dir.deleteSync(recursive: true);
 }
+
+void addModToInstance(String modFile, String instId, String fileName) {
+  var target =
+      p.join(SettingsTabState.instPath, instId, "BepInEx", "plugins", fileName);
+  File(modFile).copySync(target);
+}

@@ -1,10 +1,12 @@
 import "dart:io";
 
+import 'package:file_picker/file_picker.dart';
 import "package:flutter/material.dart";
 import "package:mod_manager/main.dart";
 import "package:mod_manager/tabs/settings.dart";
 import "package:mod_manager/util/bepinhecks_install_helper.dart";
 import "package:mod_manager/util/instance_file_manager.dart";
+import 'package:mod_manager/util/padded_divider.dart';
 import "package:path/path.dart" as p;
 
 class ModsTab extends StatefulWidget {
@@ -56,15 +58,103 @@ class ModsTabState extends State<ModsTab> {
     }
   }
 
-  void addMod(dialogSetState) {
+  Future<FilePickerResult?> handleLocateModDLL(id) async {
+    var f = await FilePicker.platform.pickFiles(
+        dialogTitle: "Locate mod",
+        type: FileType.custom,
+        allowMultiple: false,
+        allowedExtensions: List.filled(1, "dll"));
+    return f;
+  }
+
+  void handleAddModFromDLL(FilePickerResult? res, String instId, String dllName,
+      String dllId, String dllVersion) {
+    if (res == null) return;
+    if (res.files[0].path == null) return;
+    addModToInstance(
+        res.files[0].path ?? "uh this is an error", instId, res.files[0].name);
+    MyApp.cfg.addMod(dllName, dllId, dllVersion, instId);
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
+  void addMod(dialogSetState, instId, instName) {
+    FilePickerResult? res;
+    var dllName = "";
+    var dllId = "";
+    var dllVersion = "";
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, subDialogSetState) {
-            return const AlertDialog(
-              title: Text("Info"),
-              content: Text("TODO: modweaver api to install mods"),
+            return AlertDialog(
+              title: Text("Add mod to $instName"),
+              content: Column(
+                children: [
+                  const Text("Get from ModWeaver"),
+                  const Text(" "),
+                  TextField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Mod GUID",
+                    ),
+                    onChanged: (value) {},
+                  ),
+                  const Text(" "),
+                  TextButton(onPressed: () {}, child: const Text("Install")),
+                  PaddedDivider(),
+                  const Text("Add from a DLL file"),
+                  const Text(" "),
+                  TextButton(
+                      onPressed: () {
+                        handleLocateModDLL(instId).then((value) => res = value);
+                      },
+                      child: const Text("Locate...")),
+                  const Text(" "),
+                  TextField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Mod name",
+                      ),
+                      onChanged: (value) {
+                        dllName = value;
+                      }),
+                  TextField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Mod ID",
+                      ),
+                      onChanged: (value) {
+                        dllId = value;
+                      }),
+                  TextField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Mod version",
+                      ),
+                      onChanged: (value) {
+                        dllVersion = value;
+                      }),
+                  const Text(" "),
+                  TextButton(
+                      onPressed: () {
+                        handleAddModFromDLL(
+                            res, instId, dllName, dllId, dllVersion);
+                        dialogSetState(() {
+                          var x = 1 * 1;
+                        });
+                      },
+                      child: const Text("Install")),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: const Text("Close"),
+                ),
+              ],
             );
           });
         });
@@ -92,7 +182,7 @@ class ModsTabState extends State<ModsTab> {
             actions: [
               TextButton(
                   onPressed: () {
-                    addMod(dialogSetState);
+                    addMod(dialogSetState, instId, selected["name"]);
                   },
                   child: const Text("Add...")),
               TextButton(
@@ -136,7 +226,7 @@ class ModsTabState extends State<ModsTab> {
                     ),
                     onChanged: (value) => instName = value,
                   ),
-                  const Text(" \n "),
+                  const Divider(),
                   TextField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -145,7 +235,7 @@ class ModsTabState extends State<ModsTab> {
                     ),
                     onChanged: (value) => instId = value,
                   ),
-                  const Text(" \n "),
+                  const Divider(),
                   TextField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -210,10 +300,9 @@ class ModsTabState extends State<ModsTab> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            leading: const Icon(Icons.interests),
-            title: const Text("Vanilla"),
-            subtitle: Text(
-                "${SettingsTabState.instPath}${Platform.pathSeparator}spiderheck"),
+            leading: const Icon(Icons.icecream),
+            title: Text("Vanilla (${SettingsTabState.gameType})"),
+            subtitle: Text(SettingsTabState.gamePath),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
