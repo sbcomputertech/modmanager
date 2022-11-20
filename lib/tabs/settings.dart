@@ -15,10 +15,6 @@ class SettingsTabState extends State<SettingsTab> {
   static String gamePath =
       MyApp.cfg.getSetting("general", "game_path") as String;
   static bool dev = MyApp.cfg.getSetting("general", "dev") as bool;
-  static bool doorstopLog = MyApp.cfg.getSetting("doorstop", "logging") as bool;
-  static bool doorstopDebug = MyApp.cfg.getSetting("doorstop", "debug") as bool;
-  static bool bepinhecksConsole =
-      MyApp.cfg.getSetting("bepinhecks", "console") as bool;
   static String instPath =
       MyApp.cfg.getSetting("general", "instance_root") as String;
 
@@ -38,27 +34,6 @@ class SettingsTabState extends State<SettingsTab> {
       });
       MyApp.cfg.updateSettings("general", "game_path", gamePath);
     });
-  }
-
-  void changeDoorstopLogging(value) {
-    setState(() {
-      doorstopLog = value;
-    });
-    MyApp.cfg.updateSettings("doorstop", "logging", value);
-  }
-
-  void changeDoorstopDebugging(value) {
-    setState(() {
-      doorstopDebug = value;
-    });
-    MyApp.cfg.updateSettings("doorstop", "debug", value);
-  }
-
-  void changeBepinhecksConsole(value) {
-    setState(() {
-      bepinhecksConsole = value;
-    });
-    MyApp.cfg.updateSettings("bepinhecks", "console", value);
   }
 
   void changeDevMode(value) {
@@ -116,34 +91,6 @@ class SettingsTabState extends State<SettingsTab> {
                 title: const Text("Developer mode")),
           ],
         ),
-        SettingsSection(
-          title: const Text("Doorstop"),
-          tiles: [
-            SettingsTile.switchTile(
-                initialValue: doorstopLog,
-                onToggle: (value) {
-                  changeDoorstopLogging(value);
-                },
-                enabled: true,
-                title: const Text("Doorstop logging")),
-            SettingsTile.switchTile(
-                initialValue: doorstopDebug,
-                onToggle: (value) {
-                  changeDoorstopDebugging(value);
-                },
-                enabled: true,
-                title: const Text("Doorstop debugging")),
-          ],
-        ),
-        SettingsSection(title: const Text("BepInHecks"), tiles: [
-          SettingsTile.switchTile(
-              initialValue: bepinhecksConsole,
-              onToggle: (value) {
-                changeBepinhecksConsole(value);
-              },
-              enabled: true,
-              title: const Text("BepInHecks console")),
-        ]),
       ]),
     );
   }
