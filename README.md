@@ -8,5 +8,5 @@ todo
 * [ ] ModWeaver API integration
 * ~~Some BepInHecks config settings~~
 * [x] File picker for mod dlls
-* [ ] Game stats
+* [x] Game stat system
 * [x] Display BepInHecks version on instances
