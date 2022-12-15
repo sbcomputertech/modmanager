@@ -88,7 +88,7 @@ class SettingsTabState extends State<SettingsTab> {
                   changeDevMode(value);
                 },
                 enabled: true,
-                title: const Text("Developer mode")),
+                title: const Text("Developer mode (doesn't do anything yet)")),
           ],
         ),
       ]),

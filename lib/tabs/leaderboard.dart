@@ -22,7 +22,7 @@ class LeaderboardTabState extends State<LeaderboardTab> {
     entries.add(makeDropdown());
 
     guids.clear();
-    guids.add("-= Select a mod =-");
+    guids.add("~~Select a mod~~");
     for (var element in data) {
       var guid = element["mod_guid"];
       if (!guids.contains(guid)) guids.add(guid);
@@ -38,32 +38,36 @@ class LeaderboardTabState extends State<LeaderboardTab> {
     });
   }
 
-  DropdownButton makeDropdown() {
-    return DropdownButton<String>(
-      focusColor: Colors.white,
-      value: selected,
-      //elevation: 5,
-      style: const TextStyle(color: Colors.white),
-      iconEnabledColor: Colors.black,
-      items: guids.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(
-            value,
-            style: const TextStyle(color: Colors.black),
-          ),
-        );
-      }).toList(),
-      hint: const Text(
-        "-= Select a mod =-",
-        style: TextStyle(color: Colors.black),
-      ),
-      onChanged: (String? value) {
-        setState(() {
-          selected = value ?? "none";
-        });
-      },
-    );
+  Widget makeDropdown() {
+    if (entries.isNotEmpty) {
+      return DropdownButton<String>(
+        focusColor: Colors.white,
+        value: selected,
+        //elevation: 5,
+        style: const TextStyle(color: Colors.white),
+        iconEnabledColor: Colors.black,
+        items: guids.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
+        hint: const Text(
+          "-= Select a mod =-",
+          style: TextStyle(color: Colors.black),
+        ),
+        onChanged: (String? value) {
+          setState(() {
+            selected = value ?? "none";
+          });
+        },
+      );
+    } else {
+      return const Text("No leaderboard scores found");
+    }
   }
 
   @override
@@ -77,8 +81,11 @@ class LeaderboardTabState extends State<LeaderboardTab> {
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 1),
-        (Timer t) => getLb().then((value) => update(value)));
+    timer = Timer.periodic(
+        const Duration(seconds: 1),
+        (Timer t) => getLb().then((value) => {
+              if (value != null) {update(value)}
+            }));
   }
 
   @override
@@ -87,7 +94,7 @@ class LeaderboardTabState extends State<LeaderboardTab> {
     super.dispose();
   }
 
-  Future<List<dynamic>> getLb() async {
+  Future<List<dynamic>?> getLb() async {
     var url = Uri.parse(
         "https://croiqlfjgofhokfrpagk.supabase.co/rest/v1/Leaderboards?select=*");
 
@@ -98,11 +105,15 @@ class LeaderboardTabState extends State<LeaderboardTab> {
         () =>
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyb2lxbGZqZ29maG9rZnJwYWdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjU3ODE3NDQsImV4cCI6MTk4MTM1Nzc0NH0.OBdI7jvIYdI1lwVqxJa41L4ASoQuCb6n3GKolwVYglA");
 
-    http.Response response = await http.get(
-      url,
-      headers: headers,
-    );
-
-    return jsonDecode(response.body);
+    try {
+      http.Response response = await http.get(
+        url,
+        headers: headers,
+      );
+      return jsonDecode(response.body);
+    } on Exception catch (e) {
+      print("Error getting leaderboard: $e");
+      return null;
+    }
   }
 }

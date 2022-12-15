@@ -28,13 +28,25 @@ class GameTabState extends State<GameTab> {
           "Current instance: ${ModsTabState.selectedInstance}",
           style: const TextStyle(fontSize: 15),
         ),
-        PaddedDivider(),
+        const PaddedDivider(),
         const Text(
           "Stats",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         Text(
           "Times launched: ${MyApp.cfg.getStatInt("times_launched")}",
+          style: const TextStyle(fontSize: 15),
+        ),
+        const PaddedDivider(),
+        const Text(
+          "Messages",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        Text(
+          SettingsTabState.gamePath == "None" ||
+                  SettingsTabState.instPath == "None"
+              ? "Please set the game path and/or the instance path in the settings tab"
+              : "",
           style: const TextStyle(fontSize: 15),
         ),
       ],

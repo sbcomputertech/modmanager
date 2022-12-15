@@ -1,4 +1,5 @@
 import "dart:io";
+import "package:mod_manager/tabs/mods.dart";
 import "package:mod_manager/tabs/settings.dart";
 import "package:path/path.dart" as p;
 
@@ -51,17 +52,31 @@ Future<void> fileChangeover(String source) async {
   if (await isBepinexPresent()) {
     await uninstallBepinex();
   }
-  await copyPath(source, SettingsTabState.gamePath);
+  try {
+    await copyPath(source, SettingsTabState.gamePath);
+  } catch (e) {
+    print("Error in file changeover");
+  }
 }
 
 void deleteInstanceFiles(String id) {
   var path = p.join(SettingsTabState.instPath, id);
   var dir = Directory(path);
-  dir.deleteSync(recursive: true);
+  if (dir.existsSync()) {
+    dir.deleteSync(recursive: true);
+  }
 }
 
 void addModToInstance(String modFile, String instId, String fileName) {
-  var target =
-      p.join(SettingsTabState.instPath, instId, "BepInEx", "plugins", fileName);
+  var target = p.join(
+      SettingsTabState.instPath, instId, "BepInEx", "plugins", "$fileName.dll");
   File(modFile).copySync(target);
+  ModsTabState.handleLaunchClick(instId);
+}
+
+void removeModFromInstance(String modFile, String instId) {
+  var delPath = p.join(
+      SettingsTabState.instPath, instId, "BepInEx", "plugins", "$modFile.dll");
+  File(delPath).deleteSync();
+  ModsTabState.handleLaunchClick(instId);
 }

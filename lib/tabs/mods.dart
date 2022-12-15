@@ -20,7 +20,7 @@ class ModsTab extends StatefulWidget {
 class ModsTabState extends State<ModsTab> {
   static String selectedInstance = "";
 
-  void handleLaunchClick(instId) {
+  static void handleLaunchClick(instId) {
     switchInstance(instId);
     selectedInstance = instId;
   }
@@ -38,7 +38,7 @@ class ModsTabState extends State<ModsTab> {
               onPressed: () {
                 removeMod(instId, mod["id"]);
                 dialogSetState(() {
-                  var test = 1 * 1;
+                  var _ = 1 * 1;
                 });
               },
               icon: const Icon(Icons.delete))
@@ -53,6 +53,7 @@ class ModsTabState extends State<ModsTab> {
     var modToRemove = getMod(curr["mods"], modId);
     (curr["mods"] as List<dynamic>).remove(modToRemove);
     MyApp.cfg.editInstance(instId, curr);
+    removeModFromInstance(modId as String, instId);
   }
 
   dynamic getMod(mdodList, id) {
@@ -76,8 +77,7 @@ class ModsTabState extends State<ModsTab> {
       String dllId, String dllVersion) {
     if (res == null) return;
     if (res.files[0].path == null) return;
-    addModToInstance(
-        res.files[0].path ?? "uh this is an error", instId, res.files[0].name);
+    addModToInstance(res.files[0].path ?? "uh this is an error", instId, dllId);
     MyApp.cfg.addMod(dllName, dllId, dllVersion, instId);
     Navigator.of(context, rootNavigator: true).pop();
   }
@@ -107,7 +107,7 @@ class ModsTabState extends State<ModsTab> {
                   ),
                   const Text(" "),
                   TextButton(onPressed: () {}, child: const Text("Install")),
-                  PaddedDivider(),
+                  const PaddedDivider(),
                   const Text("Add from a DLL file"),
                   const Text(" "),
                   TextButton(
@@ -146,7 +146,7 @@ class ModsTabState extends State<ModsTab> {
                         handleAddModFromDLL(
                             res, instId, dllName, dllId, dllVersion);
                         dialogSetState(() {
-                          var x = 1 * 1;
+                          var _ = 1 * 1;
                         });
                       },
                       child: const Text("Install")),
@@ -207,7 +207,7 @@ class ModsTabState extends State<ModsTab> {
     MyApp.cfg.deleteInstance(id);
     deleteInstanceFiles(id);
     setState(() {
-      var x = 1 * 1;
+      var _ = 1 * 1;
     });
   }
 
@@ -434,7 +434,9 @@ class ModsTabState extends State<ModsTab> {
       Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(children: generateCards()),
+          child: Column(
+            children: generateCards(),
+          ),
         ),
       )
     ]);

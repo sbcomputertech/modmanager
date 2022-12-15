@@ -1,0 +1,1 @@
+dart run ./package.dart linux
