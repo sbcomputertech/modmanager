@@ -1,5 +1,13 @@
 # SpiderHeck Mod Manager
 
+## Features
+- Instances to keep all your mods organised
+- (indev) ModWeaver integration to easily install new mods
+- Modded leaderboard integration
+- Game stats to see how little of a life you have
+- Support requests to easily get help with technical difficulties
+- And more...
+
 ## How to install / add mods
 ### Setup
 1. Download and unzip the file from the releases page
@@ -27,10 +35,10 @@
 11. Click the install button to add it
 
 
-## Features
+## Todos
 * [x] Instances
 * [ ] ModWeaver API integration
-* ~~Some BepInHecks config settings~~
+* [ ] Maybe auto updater
 * [x] File picker for mod dlls
 * [x] Game stat system
 * [x] Display BepInHecks version on instances
