@@ -1,6 +1,7 @@
 import "dart:collection";
 import "dart:convert";
 import "dart:io";
+import 'dart:ui';
 import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
 import "package:mod_manager/main.dart";
@@ -65,11 +66,13 @@ class ModsTabState extends State<ModsTab> {
   }
 
   Future<FilePickerResult?> handleLocateModDLL(id) async {
+    var preCwd = Directory.current;
     var f = await FilePicker.platform.pickFiles(
         dialogTitle: "Locate mod",
         type: FileType.custom,
         allowMultiple: false,
         allowedExtensions: List.filled(1, "dll"));
+    Directory.current = preCwd;
     return f;
   }
 
@@ -101,12 +104,13 @@ class ModsTabState extends State<ModsTab> {
                   TextField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
+                      enabled: false,
                       hintText: "Mod GUID",
                     ),
                     onChanged: (value) {},
                   ),
                   const Text(" "),
-                  TextButton(onPressed: () {}, child: const Text("Install")),
+                  TextButton(onPressed: null, child: const Text("Install")),
                   const Divider(),
                   const Text("Add from a DLL file"),
                   const Text(" "),
