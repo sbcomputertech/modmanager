@@ -5,10 +5,6 @@
 			"game_path": "None",
 			"instance_root": "None",
 			"dev": false
-		},
-		"bepinhecks": {
-			"console": false,
-			"logfile": true
 		}
 	},
 	"stats": {
