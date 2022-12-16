@@ -74,9 +74,12 @@ class ModManCfg {
       "id": id,
       "version": version,
     };
-    (json["instances"][getInstances().indexOf(getInstanceId(instance))]["mods"]
-            as List<dynamic>)
-        .add(newObj);
+    var modlist = List.empty(growable: true);
+    modlist = json["instances"][getInstances().indexOf(getInstanceId(instance))]
+        ["mods"];
+    modlist.add(newObj);
+    json["instances"][getInstances().indexOf(getInstanceId(instance))]["mods"] =
+        modlist;
     write();
   }
 

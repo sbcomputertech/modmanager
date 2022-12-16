@@ -107,7 +107,7 @@ class ModsTabState extends State<ModsTab> {
                   ),
                   const Text(" "),
                   TextButton(onPressed: () {}, child: const Text("Install")),
-                  const PaddedDivider(),
+                  const Divider(),
                   const Text("Add from a DLL file"),
                   const Text(" "),
                   TextButton(

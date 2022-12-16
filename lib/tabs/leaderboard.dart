@@ -18,6 +18,8 @@ class LeaderboardTabState extends State<LeaderboardTab> {
   List<String> guids = List.empty(growable: true);
 
   void update(List<dynamic> data) {
+    if (!mounted) return;
+
     entries.clear();
     entries.add(makeDropdown());
 

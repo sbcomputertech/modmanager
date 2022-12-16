@@ -206,7 +206,6 @@ class MyHomePageState extends State<MyHomePage> {
         body: json,
         headers: headers,
       );
-      return jsonDecode(response.body);
     } on Exception catch (e) {
       print("Error sending support: $e");
     }
