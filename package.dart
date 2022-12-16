@@ -48,10 +48,30 @@ Future<void> windows() async {
 
   print("Creating ZIP...");
   var encoder = ZipFileEncoder();
-  encoder.zipDirectory(Directory(outDir), filename: "windows.zip");
+  encoder.zipDirectory(Directory(outDir), filename: "modman-windows.zip");
 }
 
-Future<void> linux() async {}
+Future<void> linux() async {
+  await Process.run("flutter build linux", [],
+      runInShell: true, workingDirectory: p.current);
+  var outDir = "out-linux";
+  var outDirObj = Directory(outDir);
+  if (outDirObj.existsSync()) {
+    outDirObj.deleteSync(recursive: true);
+  }
+  outDirObj.createSync();
+  var flutterBuildDir =
+      p.join(p.current, "build", "linux", "release", "bundle");
+
+  print("Copying files...");
+  await copyPath(flutterBuildDir, outDir);
+  var baseJsonPath = p.join(p.current, "modman.base.json");
+  File(baseJsonPath).copySync(p.join(outDir, "modman.json"));
+
+  print("Creating ZIP...");
+  var encoder = ZipFileEncoder();
+  encoder.zipDirectory(Directory(outDir), filename: "modman-linux.zip");
+}
 
 Future<void> copyPath(String from, String to) async {
   await Directory(to).create(recursive: true);

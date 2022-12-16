@@ -47,5 +47,5 @@ app.*.map.json
 /bepinhecks-dl
 /out-windows
 /out-linux
-windows.zip
-linux.zip
+modman-windows.zip
+modman-linux.zip
