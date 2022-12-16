@@ -6,7 +6,6 @@
 - Modded leaderboard integration
 - Game stats to see how little of a life you have
 - Support requests to easily get help with technical difficulties
-- And more...
 
 ## How to install / add mods
 ### Setup
