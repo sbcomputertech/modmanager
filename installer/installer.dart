@@ -32,8 +32,8 @@ bool isInstalled() {
 Future<void> install() async {
   var version = await getLatestVersion();
   print("Latest version: $version");
-  downloadZip(version, "windows");
-  writeVersionFile(version);
+  await downloadZip(version, "windows");
+  await writeVersionFile(version);
 }
 
 Future<void> writeVersionFile(String version) async {
