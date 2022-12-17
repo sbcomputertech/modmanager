@@ -49,3 +49,4 @@ app.*.map.json
 /out-linux
 modman-windows.zip
 modman-linux.zip
+installer/installer.exe
