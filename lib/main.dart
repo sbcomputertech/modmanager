@@ -1,6 +1,6 @@
 import "dart:collection";
 import "dart:convert";
-import 'dart:io';
+import "dart:io";
 import "package:path/path.dart" as p;
 import "package:flutter/material.dart";
 import "package:mod_manager/util/config_file.dart";
@@ -11,9 +11,89 @@ import "tabs/game.dart";
 import "tabs/mods.dart";
 import "tabs/leaderboard.dart";
 import "tabs/settings.dart";
+import "update_checker.dart" as update;
 
 void main() {
-  runApp(const MyApp());
+  asyncMain();
+}
+
+Future<void> asyncMain() async {
+  var needsUpdate = await update.checkForUpdate();
+  var newVer = await update.getLatestVersion();
+  if (needsUpdate) {
+    runApp(UpdateApp(newVer));
+  } else {
+    runApp(const MyApp());
+  }
+}
+
+class UpdateApp extends StatelessWidget {
+  String newVersion = "";
+  UpdateApp(String newVer, {super.key}) {
+    newVersion = newVer;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "ModManager Updater",
+      theme: ThemeData(
+        primarySwatch: Colors.amber,
+      ),
+      home: UpdateWidget(newVersion: newVersion),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class UpdateWidget extends StatelessWidget {
+  const UpdateWidget({
+    Key? key,
+    required this.newVersion,
+  }) : super(key: key);
+
+  final String newVersion;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("ModManager Updater"),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Center(
+          child: Column(children: [
+            const Text("ModManager needs to update!"),
+            Text("Current version: ${update.getCurrentVersion()}"),
+            Text("Latest version: $newVersion"),
+            const Divider(),
+            TextButton(
+                onPressed: () {
+                  update.update();
+                },
+                child: const Text("Install update")),
+            TextButton(
+                onPressed: () {
+                  update.setCurrentVersion(newVersion);
+                  showDialog(
+                      context: context,
+                      builder: (c) => const Center(
+                            child: Text(
+                              "Please restart the app",
+                              style: TextStyle(
+                                  color: Colors.amber,
+                                  decoration: TextDecoration.none),
+                            ),
+                          ));
+                },
+                child: const Text("Skip update"))
+          ]),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

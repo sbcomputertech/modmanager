@@ -41,14 +41,20 @@ Future<void> windows() async {
   var flutterBuildDir =
       p.join(p.current, "build", "windows", "runner", "Release");
 
+  print("Building installer");
+  await Process.run(p.join("installer", "build-installer-windows"), [],
+      runInShell: true, workingDirectory: "installer");
+  var installer_exe = File(p.join("installer", "installer.exe"));
+
   print("Copying files...");
   await copyPath(flutterBuildDir, outDir);
   var baseJsonPath = p.join(p.current, "modman.base.json");
   File(baseJsonPath).copySync(p.join(outDir, "modman.json"));
+  await installer_exe.copy(p.join(outDir, "installer.exe"));
 
   print("Creating ZIP...");
   var encoder = ZipFileEncoder();
-  encoder.zipDirectory(Directory(outDir), filename: "modman-windows.zip");
+  encoder.zipDirectory(outDirObj, filename: "modman-windows.zip");
 }
 
 Future<void> linux() async {

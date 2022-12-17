@@ -5,10 +5,29 @@ import "package:http/http.dart" as http;
 import "package:path/path.dart" as p;
 
 void main(List<String> args) {
+  run();
+}
+
+Future<void> run() async {
   if (isInstalled()) {
+    await killMMProcess();
     uninstall();
   }
-  install();
+  await install();
+  Process.start(p.join(getInstallPath(), "mod_manager"), [],
+      mode: ProcessStartMode.detached);
+}
+
+Future<void> killMMProcess() async {
+  if (Platform.isWindows) {
+    await Process.run("taskkill.exe", ["/F", "/IM", "mod_manager.exe"]);
+  } else if (Platform.isLinux) {
+    await Process.run("pkill", ["mod_manager"]);
+  } else {
+    throw Exception("Platform not supported");
+  }
+  await Future.delayed(
+      const Duration(seconds: 3)); // delay to free file handles
 }
 
 void dumpEnv() {
@@ -20,7 +39,7 @@ void dumpEnv() {
 
 void uninstall() {
   var dir = Directory(getInstallPath());
-  dir.deleteSync();
+  dir.deleteSync(recursive: true);
   print("Uninstalled");
 }
 
