@@ -362,7 +362,7 @@ class ModsTabState extends State<ModsTab> {
                 leading: const Icon(Icons.interests),
                 title: Text(inst["name"]),
                 subtitle: Text(
-                    "${SettingsTabState.instPath}${Platform.pathSeparator}${inst["id"]}\nBepInHecks version: ${inst["version"]}"),
+                    "${SettingsTabState.instPath}${Platform.pathSeparator}${inst["id"]}\nBepInHecks version: ${inst["version"]}\nNumber of mods: ${(inst["mods"] as List<dynamic>).length}"),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -434,7 +434,7 @@ class ModsTabState extends State<ModsTab> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(crossAxisCount: 2, children: [
+    return GridView.count(crossAxisCount: 1, children: [
       Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -442,7 +442,33 @@ class ModsTabState extends State<ModsTab> {
             children: generateCards(),
           ),
         ),
-      )
+      ),
+      /*Padding(
+        padding: const EdgeInsets.all(20),
+        child: Card(
+          color: Colors.indigo[100],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Column(children: [
+                  ListTile(
+                    leading: const Icon(Icons.info),
+                    title:
+                        Text("Instances: (${MyApp.cfg.getInstances().length})"),
+                    subtitle: Column(children: [
+                      Text(
+                          "Current instance: ${selectedInstance != "" ? selectedInstance : "None"}"),
+                      const PaddedDivider(),
+                      const Text("Click the + button to create an instance")
+                    ]),
+                  ),
+                ]),
+              )
+            ],
+          ),
+        ),
+      )*/
     ]);
   }
 }
