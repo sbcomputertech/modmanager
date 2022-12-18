@@ -15,7 +15,7 @@ Future<void> run() async {
   }
   await install();
   Process.start(p.join(getInstallPath(), "mod_manager"), [],
-      mode: ProcessStartMode.detached);
+      mode: ProcessStartMode.detached, workingDirectory: getInstallPath());
 }
 
 Future<void> killMMProcess() async {
