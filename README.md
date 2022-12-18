@@ -37,7 +37,7 @@
 ## Todos
 * [x] Instances
 * [ ] ModWeaver API integration
-* [ ] Maybe auto updater
+* [x] Auto updater
 * [x] File picker for mod dlls
 * [x] Game stat system
 * [x] Display BepInHecks version on instances
