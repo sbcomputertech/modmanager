@@ -162,6 +162,13 @@ class MyHomePageState extends State<MyHomePage> {
               onPressed: supportDialog,
               icon: const Icon(Icons.contact_support),
               tooltip: "Support",
+            ),
+            IconButton(
+              onPressed: () {
+                launchUrl(Uri.parse(Directory.current.path));
+              },
+              icon: const Icon(Icons.folder),
+              tooltip: "Open install folder",
             )
           ],
         ),
