@@ -44,6 +44,7 @@ dependencies:
   archive: ^3.3.4
   ini: ^2.1.0
   path_provider: ^2.0.11
+  desktop_drop: ^0.4.0
 
 dev_dependencies:
   flutter_test:

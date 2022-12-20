@@ -1,16 +1,15 @@
 import "dart:collection";
 import "dart:convert";
 import "dart:io";
-import 'dart:ui';
 import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
 import "package:mod_manager/main.dart";
 import "package:mod_manager/tabs/settings.dart";
 import "package:mod_manager/util/bepinhecks_install_helper.dart";
 import "package:mod_manager/util/instance_file_manager.dart";
-import "package:mod_manager/util/padded_divider.dart";
 import "package:http/http.dart" as http;
 import "package:path/path.dart" as p;
+import "package:desktop_drop/desktop_drop.dart";
 
 class ModsTab extends StatefulWidget {
   const ModsTab({super.key});
@@ -85,6 +84,12 @@ class ModsTabState extends State<ModsTab> {
     Navigator.of(context, rootNavigator: true).pop();
   }
 
+  void addModFromDllPath(String path, String instId, String dllName,
+      String dllId, String dllVersion) {
+    addModToInstance(path, instId, dllId);
+    MyApp.cfg.addMod(dllName, dllId, dllVersion, instId);
+  }
+
   void addMod(dialogSetState, instId, instName) {
     FilePickerResult? res;
     var dllName = "";
@@ -110,7 +115,7 @@ class ModsTabState extends State<ModsTab> {
                     onChanged: (value) {},
                   ),
                   const Text(" "),
-                  TextButton(onPressed: null, child: const Text("Install")),
+                  const TextButton(onPressed: null, child: Text("Install")),
                   const Divider(),
                   const Text("Add from a DLL file"),
                   const Text(" "),
@@ -353,60 +358,73 @@ class ModsTabState extends State<ModsTab> {
     var instances = MyApp.cfg.getInstances();
     for (var inst in instances) {
       out.add(
-        Card(
-          color: Colors.indigo[100],
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: const Icon(Icons.interests),
-                title: Text(inst["name"]),
-                subtitle: Text(
-                    "${SettingsTabState.instPath}${Platform.pathSeparator}${inst["id"]}\nBepInHecks version: ${inst["version"]}\nNumber of mods: ${(inst["mods"] as List<dynamic>).length}"),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      handleModsClick(inst["id"]);
-                    },
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.amber),
-                        foregroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.white)),
-                    child: const Text("Mods"),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed: () {
-                      handleLaunchClick(inst["id"]);
-                    },
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.amber),
-                        foregroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.white)),
-                    child: const Text("Select"),
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    onPressed: () {
-                      handleDeleteClick(inst["id"]);
-                    },
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.amber),
-                        foregroundColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.white)),
-                    child: const Text("Delete"),
-                  ),
-                  const Text(" \n "),
-                  const SizedBox(width: 8),
-                ],
-              ),
-            ],
+        DropTarget(
+          onDragDone: (details) {
+            print(
+                "Dragged file ${details.files[0].path} to instance ${inst["id"]}");
+            if (!details.files[0].name.endsWith(".dll")) return;
+            addModFromDllPath(
+                details.files[0].path,
+                inst["id"],
+                details.files[0].name.replaceAll(".dll", ""),
+                details.files[0].name.replaceAll(".dll", ""),
+                "x.y.z");
+          },
+          child: Card(
+            color: Colors.indigo[100],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.interests),
+                  title: Text(inst["name"]),
+                  subtitle: Text(
+                      "${SettingsTabState.instPath}${Platform.pathSeparator}${inst["id"]}\nBepInHecks version: ${inst["version"]}\nNumber of mods: ${(inst["mods"] as List<dynamic>).length}"),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        handleModsClick(inst["id"]);
+                      },
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Colors.amber),
+                          foregroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Colors.white)),
+                      child: const Text("Mods"),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        handleLaunchClick(inst["id"]);
+                      },
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Colors.amber),
+                          foregroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Colors.white)),
+                      child: const Text("Select"),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        handleDeleteClick(inst["id"]);
+                      },
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Colors.amber),
+                          foregroundColor: MaterialStateProperty.resolveWith(
+                              (states) => Colors.white)),
+                      child: const Text("Delete"),
+                    ),
+                    const Text(" \n "),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -442,33 +460,7 @@ class ModsTabState extends State<ModsTab> {
             children: generateCards(),
           ),
         ),
-      ),
-      /*Padding(
-        padding: const EdgeInsets.all(20),
-        child: Card(
-          color: Colors.indigo[100],
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Column(children: [
-                  ListTile(
-                    leading: const Icon(Icons.info),
-                    title:
-                        Text("Instances: (${MyApp.cfg.getInstances().length})"),
-                    subtitle: Column(children: [
-                      Text(
-                          "Current instance: ${selectedInstance != "" ? selectedInstance : "None"}"),
-                      const PaddedDivider(),
-                      const Text("Click the + button to create an instance")
-                    ]),
-                  ),
-                ]),
-              )
-            ],
-          ),
-        ),
-      )*/
+      )
     ]);
   }
 }
