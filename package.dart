@@ -55,8 +55,6 @@ Future<void> windows() async {
 }
 
 Future<void> linux() async {
-  await Process.run("flutter build linux", [],
-      runInShell: true, workingDirectory: p.current);
   var outDir = "out-linux";
   var outDirObj = Directory(outDir);
   if (outDirObj.existsSync()) {
@@ -64,7 +62,7 @@ Future<void> linux() async {
   }
   outDirObj.createSync();
   var flutterBuildDir =
-      p.join(p.current, "build", "linux", "release", "bundle");
+      p.join(p.current, "build", "linux", "x64", "release", "bundle");
   var installerBin = File(p.join("installer", "installer"));
 
   print("Copying files...");

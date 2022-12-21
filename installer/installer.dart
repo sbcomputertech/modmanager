@@ -15,6 +15,11 @@ Future<void> run() async {
   }
   await install();
   await createShortcut();
+  if(Platform.isLinux) {
+    // fix permissions
+    await Process.run("chmod", ["+x", p.join(getInstallPath(), "mod_manager")]);
+    await Process.run("chmod", ["+x", p.join(getInstallPath(), "installer")]);
+  }
   Process.start(p.join(getInstallPath(), "mod_manager"), [],
       mode: ProcessStartMode.detached, workingDirectory: getInstallPath());
 }
@@ -67,7 +72,7 @@ bool isInstalled() {
 Future<void> install() async {
   var version = await getLatestVersion();
   print("Latest version: $version");
-  await downloadZip(version, "windows");
+  await downloadZip(version, Platform.isWindows ? "windows" : "linux");
   await writeVersionFile(version);
 }
 
