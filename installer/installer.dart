@@ -14,8 +14,24 @@ Future<void> run() async {
     uninstall();
   }
   await install();
+  await createShortcut();
   Process.start(p.join(getInstallPath(), "mod_manager"), [],
       mode: ProcessStartMode.detached, workingDirectory: getInstallPath());
+}
+
+Future<void> createShortcut() async {
+  if (Platform.isWindows) {
+    print("Creating windows desktop shortcut");
+    var spath = p.join(Platform.environment["USERPROFILE"] ?? ".", "Desktop",
+        "Cobweb Mod Manager.lnk");
+    print(spath);
+    var res = await Process.run("cscript.exe", [
+      p.join(getInstallPath(), "cshortcut-win.vbs"),
+      spath,
+      p.join(getInstallPath(), "mod_manager.exe")
+    ]);
+    print(res.stdout);
+  }
 }
 
 Future<void> killMMProcess() async {

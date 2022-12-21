@@ -40,17 +40,14 @@ Future<void> windows() async {
   outDirObj.createSync();
   var flutterBuildDir =
       p.join(p.current, "build", "windows", "runner", "Release");
-
-  print("Building installer");
-  await Process.run(p.join("installer", "build-installer-windows"), [],
-      runInShell: true, workingDirectory: "installer");
-  var installer_exe = File(p.join("installer", "installer.exe"));
+  var installerExe = File(p.join("installer", "installer.exe"));
 
   print("Copying files...");
   await copyPath(flutterBuildDir, outDir);
   var baseJsonPath = p.join(p.current, "modman.base.json");
   File(baseJsonPath).copySync(p.join(outDir, "modman.json"));
-  await installer_exe.copy(p.join(outDir, "installer.exe"));
+  await installerExe.copy(p.join(outDir, "installer.exe"));
+  await copyPath("modmanager-package", outDir);
 
   print("Creating ZIP...");
   var encoder = ZipFileEncoder();
@@ -68,11 +65,14 @@ Future<void> linux() async {
   outDirObj.createSync();
   var flutterBuildDir =
       p.join(p.current, "build", "linux", "release", "bundle");
+  var installerBin = File(p.join("installer", "installer"));
 
   print("Copying files...");
   await copyPath(flutterBuildDir, outDir);
   var baseJsonPath = p.join(p.current, "modman.base.json");
   File(baseJsonPath).copySync(p.join(outDir, "modman.json"));
+  await installerBin.copy(p.join(outDir, "installer"));
+  await copyPath("modmanager-package", outDir);
 
   print("Creating ZIP...");
   var encoder = ZipFileEncoder();
