@@ -5,7 +5,25 @@ import "package:http/http.dart" as http;
 import "package:path/path.dart" as p;
 
 void main(List<String> args) {
-  run();
+  if(args.isEmpty) {
+    run();
+  } else {
+    switch(args[0]) {
+      case "uninstall":
+        uninstallOnly();
+        break;
+      default:
+        run();
+        break;
+    }
+  }
+}
+
+Future<void> uninstallOnly() async {
+  if (isInstalled()) {
+    await killMMProcess();
+    uninstall();
+  }
 }
 
 Future<void> run() async {
@@ -33,7 +51,8 @@ Future<void> createShortcut() async {
     var res = await Process.run("cscript.exe", [
       p.join(getInstallPath(), "cshortcut-win.vbs"),
       spath,
-      p.join(getInstallPath(), "mod_manager.exe")
+      p.join(getInstallPath(), "mod_manager.exe"),
+      getInstallPath()
     ]);
     print(res.stdout);
   }
